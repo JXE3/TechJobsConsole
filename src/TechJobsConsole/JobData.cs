@@ -3,6 +3,11 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
+using System;
+
+
+
+
 namespace TechJobsConsole
 {
     class JobData
@@ -48,11 +53,45 @@ namespace TechJobsConsole
             foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
-
+            
                 if (aValue.Contains(value))
                 {
                     jobs.Add(row);
                 }
+            }
+
+            return jobs;
+        }
+
+
+        // Search all columns
+         
+        public static List<Dictionary<string, string>> FindByKey(Dictionary<string, string> columnChoices, string searchValue)
+        {
+            // load data, if not already loaded
+            LoadData();
+
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+            foreach (Dictionary<string, string> row in AllJobs)
+            {
+                
+                foreach (string columnChoiceKey in columnChoices.Keys)
+                {
+                    if (columnChoiceKey != "all")
+                    {
+                        string columnValue = row[columnChoiceKey];
+                        string columnValueLower = columnValue.ToLower();
+
+                        string searchValueLower = searchValue.ToLower();
+
+                        if (columnValueLower.Contains(searchValueLower))
+                        {
+                            jobs.Add(row);
+                            goto endColumnChoicesLoop;
+                        }
+                    }
+                 }
+                endColumnChoicesLoop:;
             }
 
             return jobs;
